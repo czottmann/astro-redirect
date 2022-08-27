@@ -1,0 +1,29 @@
+---
+export function getStaticPaths() {
+  const redirPrefix = "PUBLIC_REDIRECT_";
+
+  return Object.entries(import.meta.env)
+    .filter((kv) => kv[0].startsWith(redirPrefix))
+    .map((kv) => ({
+      params: { slug: kv[0].replace(redirPrefix, "") },
+      props: { destUrl: kv[1] },
+    }));
+}
+
+const { destUrl } = Astro.props;
+const redirect = `0; url=${destUrl}`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={redirect} />
+  </head>
+  <body>
+    <p>
+      Redirecting to
+      <a href={destUrl}><tt>{destUrl}</tt></a>…
+    </p>
+  </body>
+</html>
